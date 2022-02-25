@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>  {
   List<Map> dbList = [];
   List<Map> todoList = [];
   List<Map> doneList = [];
@@ -36,73 +36,79 @@ class _HomeScreenState extends State<HomeScreen> {
                   addNewTask(map);
                 } else {
                   scaffoldKey.currentState
-                      ?.showBottomSheet((context) => Container(
-                            height: 200,
-                            color: Colors.white,
-                            padding: const EdgeInsets.all(16.0),
-                            child: Form(
-                              key: formKey,
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    "Add your Task",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  defaultTextField(
-                                    label: "Your Task",
-                                    controller: taskController,
-                                    prefixIcon: Icons.add_task,
-                                    validate: (value) {
-                                      if (value.toString().isEmpty) {
-                                        return 'title must not be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
+                      ?.showBottomSheet((context) =>
+                      Container(
+                        height: 200,
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(16.0),
+                        child: Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Add your Task",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
-                            ),
-                          ));
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              defaultTextField(
+                                label: "Your Task",
+                                controller: taskController,
+                                prefixIcon: Icons.add_task,
+                                validate: (value) {
+                                  if (value
+                                      .toString()
+                                      .isEmpty) {
+                                    return 'title must not be empty';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
                 }
               } else {
                 scaffoldKey.currentState
-                    ?.showBottomSheet((context) => Container(
-                          height: 200,
-                          color: Colors.white,
-                          padding: const EdgeInsets.all(16.0),
-                          child: Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                const Text(
-                                  "Add your Task",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                defaultTextField(
-                                  label: "Your Task",
-                                  controller: taskController,
-                                  prefixIcon: Icons.add_task,
-                                  validate: (value) {
-                                    if (value.toString().isEmpty) {
-                                      return 'title must not be empty';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ],
+                    ?.showBottomSheet((context) =>
+                    Container(
+                      height: 200,
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(16.0),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Add your Task",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ));
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            defaultTextField(
+                              label: "Your Task",
+                              controller: taskController,
+                              prefixIcon: Icons.add_task,
+                              validate: (value) {
+                                if (value
+                                    .toString()
+                                    .isEmpty) {
+                                  return 'title must not be empty';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ));
               }
             },
           ),
@@ -229,10 +235,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // open the database
     Database database = await openDatabase('tasks.db', version: 1,
         onCreate: (Database db, int version) async {
-      // When creating the db, create the table
-      await db.execute(
-          'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, taskTitle TEXT, taskState TEXT)');
-    });
+          // When creating the db, create the table
+          await db.execute(
+              'CREATE TABLE Tasks (id INTEGER PRIMARY KEY, taskTitle TEXT, taskState TEXT)');
+        });
     setState(() {
       rearrangeLists();
     });
@@ -262,9 +268,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> updateTask(Map map) async {
-    await getTaskDB().then((value) => value.rawUpdate(
-        'UPDATE Tasks SET taskState = ?, taskTitle = ? WHERE id = ?',
-        ['${map['taskState']}', '${map['taskTitle']}', '${map['id']}']));
+    await getTaskDB().then((value) =>
+        value.rawUpdate(
+            'UPDATE Tasks SET taskState = ?, taskTitle = ? WHERE id = ?',
+            ['${map['taskState']}', '${map['taskTitle']}', '${map['id']}']));
   }
 
   Widget chooseIconForFloating() {
@@ -277,5 +284,10 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       return const Icon(Icons.add);
     }
+  }
+
+  Future<void> removeTask(Map task) async {
+    await getTaskDB().then((value) =>
+        value.rawDelete('DELETE FROM Tasks WHERE id = ?', ['${task['id']}']));
   }
 }
