@@ -1,0 +1,1 @@
+web:flutter run lib/main.dart
